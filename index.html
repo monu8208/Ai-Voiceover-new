@@ -5,13 +5,45 @@
 </head>
 <body>
 
-<h2>Voice Generator</h2>
+<h2>AI Voice Generator</h2>
 
-<textarea id="text" placeholder="Type something"></textarea><br><br>
+<textarea id="text" placeholder="Type text here"></textarea><br><br>
 
 <button onclick="generateVoice()">Generate Voice</button>
 
-<script src="script.js"></script>
+<script>
+async function generateVoice() {
+  const text = document.getElementById("text").value;
+
+  if (!text) {
+    alert("Text likho pehle");
+    return;
+  }
+
+  const response = await fetch("https://api.elevenlabs.io/v1/text-to-speech/Sxk6njaoa7XLsAFT7WcN/stream", {
+    method: "POST",
+    headers: {
+      "xi-api-key": "bb8f3e349e3a2b266e3bcaaed705e40e9a12dbcffa38df153f8157eca81a08da",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      text: text,
+      model_id: "eleven_multilingual_v2"
+    })
+  });
+
+  if (!response.ok) {
+    alert("API Error: " + response.status);
+    return;
+  }
+
+  const audioBlob = await response.blob();
+  const audioUrl = URL.createObjectURL(audioBlob);
+
+  const audio = new Audio(audioUrl);
+  audio.play();
+}
+</script>
 
 </body>
 </html>
